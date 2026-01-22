@@ -1,0 +1,27 @@
+name: CI/CD for Model Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Build & Deploy on Self-Hosted Runner
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Load ENV
+        run: |
+          source /root/rohan_works_main/env.sh
+
+      - name: Stop existing containers
+        run: |
+          docker compose down || true
+
+      - name: Build and run Docker image locally
+        run: |
+          docker compose up -d --build
